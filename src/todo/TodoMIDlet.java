@@ -1,12 +1,10 @@
 package todo;
 
-import java.io.*;
 import java.util.*;
-import javax.microedition.rms.*;
 import javax.microedition.midlet.*;
 import javax.microedition.lcdui.*;
 
-class TodoMIDlet extends MIDlet implements ItemStateListener, CommandListener {
+public class TodoMIDlet extends MIDlet implements CommandListener {
 
     private Display display;
     private Form fmMain, fmAdd;
@@ -49,13 +47,11 @@ class TodoMIDlet extends MIDlet implements ItemStateListener, CommandListener {
         fmMain.addCommand(cmCompleted);
         fmMain.append(cgTodos);
         fmMain.setCommandListener(this);
-        fmMain.setItemStateListener(this);
 
         fmAdd.addCommand(cmCancel);
         fmAdd.addCommand(cmAdd);
         fmAdd.append(tfTodo);
         fmAdd.setCommandListener(this);
-        fmAdd.setItemStateListener(this);
 
         list = new List("Completed Todos", Choice.IMPLICIT);
         list.addCommand(cmCancelList);
@@ -99,10 +95,6 @@ class TodoMIDlet extends MIDlet implements ItemStateListener, CommandListener {
         if (c == cmCompleted) {
             display.setCurrent(list);
         }
-    }
-
-    public void itemStateChanged(Item item) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean addTodoItem(String item) {
