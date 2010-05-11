@@ -40,8 +40,8 @@ public class TodoMIDlet extends MIDlet implements CommandListener {
         cmCancelList = new Command("Main", Command.CANCEL, 1);
         cmAdd = new Command("Add to List", Command.OK, 1);
         cmDone = new Command("Mark Set as Done", Command.OK, 2);
-        cmCompleted = new Command("View Completed", Command.SCREEN, 2);
-        cmSend = new Command("Send to Gist", Command.SCREEN, 2);
+        cmCompleted = new Command("View Completed", Command.SCREEN, 3);
+        cmSend = new Command("Send to Gist", Command.SCREEN, 4);
 
         // Text fields
         tfTodo = new TextField("Add:", "", 50, TextField.ANY);
