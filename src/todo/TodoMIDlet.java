@@ -136,6 +136,7 @@ public class TodoMIDlet extends MIDlet implements CommandListener {
             if(cgTodos.isSelected(i - 1)) {
                 list.append(cgTodos.getString(i - 1), null);
                 vecCompleted.addElement(cgTodos.getString(i -1));
+                vecTodo.removeElement(cgTodos.getString(i - 1));
                 cgTodos.delete(i - 1);
             }
         }
@@ -156,36 +157,14 @@ public class TodoMIDlet extends MIDlet implements CommandListener {
                 note += "\n";
             }
         }
-        sendPostRequest(note);
-    }
-
-/*
- * Sends a Post Request
- *
- * @link http://wiki.forum.nokia.com/index.php/How_to_use_Http_POST_request_in_Java_ME
- */
-    public boolean sendPostRequest(String message) {
-	HttpConnection hc = null;
-	InputStream in = null;
-	OutputStream out = null;
         String url = "http://gist.github.com/api/v1/xml/new";
-
-        message = "files[file.textile]=" + message;
-
-	// specifying the query string
-	try {
-            hc = (HttpConnection)Connector.open(url);
-            hc.setRequestMethod(HttpConnection.POST);
-            hc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            hc.setRequestProperty("Content-Length", Integer.toString(message.length()));
-            out = hc.openOutputStream();
-            out.write(message.getBytes());
-            in = hc.openInputStream();
-            int length = (int)hc.getLength();
-            byte[] data = new byte[length];
-            in.read(data);
-            String response = new String(data);
-
+        String response = sendPostRequest(url, "files[file.textile]=" + note);
+        if (response.equals("")) {
+            StringItem text = new StringItem(null, "Your todo list could not be saved");
+            fmGist.deleteAll();
+            fmGist.append(text);
+            fmGist.setTitle("Error");
+        } else {
             // Pa
             RE r = new RE("<repo>");
             String[] arr = r.split(response);
@@ -198,11 +177,34 @@ public class TodoMIDlet extends MIDlet implements CommandListener {
             fmGist.append(text);
             fmGist.append(gist);
             fmGist.setTitle("Gist Saved!");
+        }
+    }
 
+/*
+ * Sends a Post Request
+ *
+ * @link http://wiki.forum.nokia.com/index.php/How_to_use_Http_POST_request_in_Java_ME
+ */
+    public String sendPostRequest(String url, String message) {
+	HttpConnection hc = null;
+	InputStream in = null;
+	OutputStream out = null;
+
+        String responseMessage = "";
+	// specifying the query string
+	try {
+            hc = (HttpConnection)Connector.open(url);
+            hc.setRequestMethod(HttpConnection.POST);
+            hc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            hc.setRequestProperty("Content-Length", Integer.toString(message.length()));
+            out = hc.openOutputStream();
+            out.write(message.getBytes());
+            in = hc.openInputStream();
+            int length = (int)hc.getLength();
+            byte[] data = new byte[length];
+            in.read(data);
+            responseMessage = new String(data);
 	} catch (IOException ioe) {
-            StringItem stringItem = new StringItem(null, ioe.toString());
-            fmGist.append(stringItem);
-            fmGist.setTitle("Done");
 	} finally {
             // freeing up i/o streams and http connection
             try {
@@ -215,7 +217,7 @@ public class TodoMIDlet extends MIDlet implements CommandListener {
                 if (out != null) out.close();
             } catch (IOException ignored) { }
 	}
-        return true;
+        return responseMessage;
     }
 
 }
