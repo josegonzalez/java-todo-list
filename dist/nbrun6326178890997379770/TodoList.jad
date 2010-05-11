@@ -1,8 +1,0 @@
-MIDlet-1: TodoMIDlet, , todo.TodoMIDlet
-MIDlet-Jar-Size: 34415
-MIDlet-Jar-URL: TodoList.jar
-MIDlet-Name: TodoList
-MIDlet-Vendor: Vendor
-MIDlet-Version: 1.0
-MicroEdition-Configuration: CLDC-1.1
-MicroEdition-Profile: MIDP-2.1
